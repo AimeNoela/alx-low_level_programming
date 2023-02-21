@@ -1,6 +1,5 @@
 #include "main.h"
-#include <unistd.h>
-#include <stdio.h>
+
 /**
  * main - main block
  * Description:  print _putchar with a new linw
@@ -8,14 +7,14 @@
  */
 int main(void)
 {
-	_putchar('_');
-	_putchar('p');
-	_putchar('u');
-	_putchar('t');
-	_putchar('c');
-	_putchar('h');
-	_putchar('a');
-	_putchar('r');
-	_putchar('\n');
+	_pitchar('_');
+	_pitchar('p');
+	_pitchar('u');
+	_pitchar('t');
+	_pitchar('c');
+	_pitchar('h');
+	_pitchar('a');
+	_pitchar('r');
+	_pitchar('\n');
 	return (0);
 }
