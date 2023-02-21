@@ -1,14 +1,14 @@
 #include "main.h"
 #include <unistd.h>
-
+#include <stdio.h>
 /**
- * main - main bloc
+ * main - main block
  * Description:  print _putchar with a new linw
- * Retrun: 0
+ * Retrun: Always 0
  */
 int main(void)
 {
-	_putchar('-');
+	_putchar('_');
 	_putchar('p');
 	_putchar('u');
 	_putchar('t');
@@ -17,6 +17,5 @@ int main(void)
 	_putchar('a');
 	_putchar('r');
 	_putchar('\n');
-
-	retun(0);
+	return (0);
 }
