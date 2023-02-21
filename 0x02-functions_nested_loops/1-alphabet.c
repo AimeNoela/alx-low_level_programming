@@ -1,7 +1,6 @@
 #include "main.h"
 #include <stdio.h>
 /**
- * main -main block
  * print_alphabet - print alphabet in lowecases
  * Retuen: 0
  */
