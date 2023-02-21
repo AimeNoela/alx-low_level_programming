@@ -7,14 +7,14 @@
  */
 int main(void)
 {
-	_pitchar('_');
-	_pitchar('p');
-	_pitchar('u');
-	_pitchar('t');
-	_pitchar('c');
-	_pitchar('h');
-	_pitchar('a');
-	_pitchar('r');
-	_pitchar('\n');
+	_putchar('_');
+	_putchar('p');
+	_putchar('u');
+	_putchar('t');
+	_putchar('c');
+	_putchar('h');
+	_putchar('a');
+	_putchar('r');
+	_putchar('\n');
 	return (0);
 }
