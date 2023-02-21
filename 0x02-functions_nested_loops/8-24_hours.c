@@ -4,7 +4,7 @@
 
 /**
  * jack_bauer - print minutes of Jack Bauer
- * Rerutn
+ * Return: ...
  */
 
 void jack_bauer(void)
@@ -13,6 +13,7 @@ void jack_bauer(void)
 	int b;
 	int c;
 	int d;
+
 	for (a = 0; b <= 2; a++)
 	{
 	for (b = 0; b <= 9; b++)
@@ -26,9 +27,10 @@ void jack_bauer(void)
 	_putchar(a + '0');
 	_putchar(b + '0');
 	_putchar(58);
-	_putchar(c + '0');}
+	_putchar(c + '0');
 	_putchar(d + '0');
 	_putchar('\n');
+	}
 	}
 	}
 	}
