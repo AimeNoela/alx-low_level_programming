@@ -16,6 +16,6 @@ z += i;
 }
 i++;
 }
-printif("%d\n", z);
+print_sign("%d\n", z);
 return (0);
 }
