@@ -8,16 +8,13 @@ int main(void)
 
 	a[2] = 1024;
 	p = &n;
-
 /*
- * write your line of code ...
- * main - magic
- * -You are not allowed to use the variable a in your new line of code
- * -You are not allowed to modify the variable p
- * -You can only write one statement
- * -You are not allowed to use ,
- * -You are not allowed to code anything else than the line
- * of expected line of code at the expected line
+ * write your line of code here...
+ * Remember:
+ * - you are not allowed to use a
+ * - you are not allowed to modify p
+ * - only one statement
+ * - you are not allowed to code anything else than this line of code
  */
 
 	*(p  + 5) = 98;
