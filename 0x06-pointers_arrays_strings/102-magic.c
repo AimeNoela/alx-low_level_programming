@@ -1,6 +1,11 @@
 #include "main.h"
 #include <stdio.h>
 
+/**
+ * main - Add one line to this code, so that the program prints a[2] = 98
+ * Return: 0
+ */
+
 int main(void)
 {
 	int n;
@@ -11,7 +16,8 @@ int main(void)
 	p = &n;
 
 /*
- * write your line
+ * write your line of code ...
+ * main - magic
  * You are not allowed to use the variable a in your new line of code
  * You are not allowed to modify the variable p
  * You can only write one statement
