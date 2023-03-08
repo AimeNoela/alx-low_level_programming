@@ -27,7 +27,7 @@ int evaluate_num(int num, int iterator)
 
 /**
  * is_prime_number - evaluate if the integer is a  prime or not
- * @n: integer
+ * @num: integer
  * Return: evaluate_num
  */
 
