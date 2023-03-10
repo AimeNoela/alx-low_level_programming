@@ -30,7 +30,7 @@ int check_num(char *str)
 /**
  * main - print the name of the program
  * @argc: counts argumers
- * @argv arguments
+ * @argv: arguments
  * Return: 0 (success)
  */
 
