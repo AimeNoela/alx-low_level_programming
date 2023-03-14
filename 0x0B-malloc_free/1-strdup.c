@@ -1,42 +1,34 @@
 #include "main.h"
+#include <stdlib.h>
 
 /**
- * _strlen - function that counts array
- * @s: array of element
- * Return:1
+ * _strdup - duplicate a string
+ * @str: the string is duplicate
+ * Return: the string duplicated
  */
 
-int _strlen(char *s)
+char *_strdup(char *str)
 {
-	unsigned int i;
+	int a = 0, i = 1;
+	char *s;
 
-	i = 0;
-	while (s[i] != '\0')
+	if (str == NULL)
+		return (NULL);
+
+	while (str[i])
 	{
 		i++;
 	}
-	return (i);
-}
+	s = malloc((sizeof(char) * i) + 1);
 
-/**
- * _strdup -  function returns a pointer to string duplicate of str
- * @str: array of lements
- * @dest: array
- * Return: pointer to array
- */
+	if (s == NULL)
+		return (NULL);
 
-char *_strdup(char *dest, char *str)
-{
-	int i = 0;
-
-	while (str[i] != '\0')
+	while (a < i)
 	{
-		dest[i] = str[i];
-		i++;
+		s[a] = str[a];
+		a++;
 	}
-	dest[i] = '\0';
-	{
-		dest[i] = '\0';
-	}
-	return (dest);
+	s[a] = '\0';
+	return (s);
 }
