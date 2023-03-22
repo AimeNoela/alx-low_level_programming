@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include "function_pointers.h"
+#include <unistd.h>
 /**
  * _putchar - function that print c to stdout
  * @c: character to consider
@@ -7,6 +8,5 @@
  */
 int _putchar(char c)
 {
-	int
-		Return (0);
+	return (write(1, &c, 1));
 }
