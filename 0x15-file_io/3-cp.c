@@ -1,106 +1,103 @@
 #include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+char *create_buffer(char *file);
+void close_file(int fd);
 
 /**
- * print_usage_error - Prints usage error message
- * Return: void
+ * create_buffer - Allocates 1024 bytes for a buffer.
+ * @file: The name of the file buffer is storing chars for.
+ *
+ * Return: A pointer to the newly-allocated buffer.
  */
-void print_usage_error(void)
+char *create_buffer(char *file)
 {
-	dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+	char *buffer = NULL;
+
+	buffer = (char *) malloc(sizeof(char) * 1024);
+
+	if (buffer == NULL)
+	{
+		dprintf(STDERR_FILENO,
+			"Error: Can't write to %s\n", file);
+		exit(99);
+	}
+
+	return (buffer);
 }
 
 /**
- * print_read_error - Prints read error message
- * @file: name of the file that cannot be read
- * Return: void
+ * close_file - Closes file descriptors.
+ * @fd: The file descriptor to be closed.
  */
-void print_read_error(char *file)
+void close_file(int fd)
 {
-	dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file);
+	int c = -1;
+
+	c = close(fd);
+
+	if (c == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
+		exit(100);
+	}
 }
 
 /**
- * print_write_error - Prints write error message
- * @file: name of the file that cannot be written to
- * Return: void
- */
-void print_write_error(char *file)
-{
-	dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file);
-}
-
-/**
- * print_close_error - Prints close error message
- * @fd: file descriptor of the file that cannot be closed
- * Return: void
- */
-void print_close_error(int fd)
-{
-	dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
-}
-
-/**
- * main - Copies the content of a file to another file
- * @argc: Number of arguments passed to the program
- * @argv: Array of pointers to the arguments
- * Return: 0 on success, or an error code on failure
+ * main - Copies the contents of a file to another file.
+ * @argc: The number of arguments supplied to the program.
+ * @argv: An array of pointers to the arguments.
+ *
+ * Return: 0 on success.
+ *
+ * Description: If the argument count is incorrect - exit code 97.
+ * If file_from does not exist or cannot be read - exit code 98.
+ * If file_to cannot be created or written to - exit code 99.
+ * If file_to or file_from cannot be closed - exit code 100.
  */
 int main(int argc, char *argv[])
 {
-	int file_from, file_to, r, w;
-	char *buffer;
+	int from = -1, to = -1, r = -1, w = -1;
+	char *buffer = NULL;
+
+	if (argc != 3)
 	{
-		print_usage_error();
-		return (EXIT_FAILURE);
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		exit(97);
 	}
 
-	file_from = open(argv[1], O_RDONLY);
-
-	if (file_from == -1)
-	{
-		print_read_error(argv[1]);
-		return (EXIT_FAILURE);
-	}
-	file_to = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-
-	if (file_to == -1)
-	{
-		print_write_error(argv[2]);
-	return (EXIT_FAILURE);
-	}
+	buffer = create_buffer(argv[2]);
+	from = open(argv[1], O_RDONLY);
+	r = read(from, buffer, 1024);
+	to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
 
 	do {
-		r = read(file_from, *buffer, 1024);
-
-		if (r == -1)
+		if (from == -1 || r == -1)
 		{
-			print_read_error(argv[1]);
-			close(file_from);
-			close(file_to);
-			return (EXIT_FAILURE);
+			dprintf(STDERR_FILENO,
+				"Error: Can't read from file %s\n", argv[1]);
+			free(buffer);
+			exit(98);
 		}
-		w = write(file_to, buffer, r);
 
-		if (w == -1)
+		w = write(to, buffer, r);
+		if (to == -1 || w == -1)
 		{
-			print_write_error(argv[2]);
-			close(file_from);
-			close(file_to);
-			return (EXIT_FAILURE);
+			dprintf(STDERR_FILENO,
+				"Error: Can't write to %s\n", argv[2]);
+			free(buffer);
+			exit(99);
 		}
+
+		r = read(from, buffer, 1024);
+		to = open(argv[2], O_WRONLY | O_APPEND);
+
 	} while (r > 0);
 
-	if (close(file_from) == -1)
-	{
-		print_close_error(file_from);
-		return (EXIT_FAILURE);
-	}
+	free(buffer);
+	close_file(from);
+	close_file(to);
 
-	if (close(file_to) == -1)
-	{
-		print_close_error(file_to);
-		return (EXIT_FAILURE);
-	}
-
-	return (EXIT_SUCCESS);
+	return (0);
 }
