@@ -1,103 +1,99 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
 #include <elf.h>
-#include "main.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-/**
- * elf_header - displays the information contained in the ELF header
- * @filename: name of the ELF file
- * Return: 0 on success, 98 on error
- */
-int elf_header(const char *filename)
+void check_elf(unsigned char *e_ident);
+void print_header(unsigned char *e_ident);
+void close_elf(int elf);
+
+void check_elf(unsigned char *e_ident)
 {
-	int fd, ret = 98;
-	Elf64_Ehdr header;
-
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
+	if (e_ident[0] != 0x7f || e_ident[1] != 'E' || e_ident[2] != 'L' || e_ident[3] != 'F')
 	{
-		dprintf(STDERR_FILENO, "Error: Could not open file %s\n", filename);
-		return (ret);
+		fprintf(stderr, "Error: Not an ELF file\n");
+		exit(98);
 	}
+}
 
-	if (read(fd, &header, sizeof(header)) != sizeof(header))
-	{
-		dprintf(STDERR_FILENO, "Error: Could not read ELF header from file %s\n", filename);
-		goto cleanup;
-	}
-
-	if (header.e_ident[EI_MAG0] != ELFMAG0 ||
-	    header.e_ident[EI_MAG1] != ELFMAG1 ||
-	    header.e_ident[EI_MAG2] != ELFMAG2 ||
-	    header.e_ident[EI_MAG3] != ELFMAG3)
-	{
-		dprintf(STDERR_FILENO, "Error: File %s is not an ELF file\n", filename);
-		goto cleanup;
-	}
-
+void print_header(unsigned char *e_ident)
+{
 	printf("ELF Header:\n");
-	printf("  Magic:   ");
+	printf(" Magic: ");
+
 	for (int i = 0; i < EI_NIDENT; i++)
-		printf("%02x ", header.e_ident[i]);
+	{
+		printf("%02x ", e_ident[i]);
+	}
 	printf("\n");
+	printf(" Class: ");
 
-	printf("  Class:                             ");
-	switch (header.e_ident[EI_CLASS])
+	if (e_ident[EI_CLASS] == ELFCLASSNONE)
 	{
-	case ELFCLASSNONE:
 		printf("none\n");
-		break;
-	case ELFCLASS32:
+	} else if (e_ident[EI_CLASS] == ELFCLASS32)
+	{
 		printf("ELF32\n");
-		break;
-	case ELFCLASS64:
-		printf("ELF64\n");
-		break;
-	default:
-		printf("<unknown: %x>\n", header.e_ident[EI_CLASS]);
-		break;
-	}
-
-	printf("  Data:                              ");
-	switch (header.e_ident[EI_DATA])
+	} else if (e_ident[EI_CLASS] == ELFCLASS64)
 	{
-	case ELFDATANONE:
-		printf("none\n");
-		break;
-	case ELFDATA2LSB:
-		printf("2's complement, little endian\n");
-		break;
-	case ELFDATA2MSB:
-		printf("2's complement, big endian\n");
-		break;
-	default:
-		printf("<unknown: %x>\n", header.e_ident[EI_DATA]);
-		break;
+		printf("ELF64\n");
+	} else
+	{
+		printf("<unknown: %x>\n", e_ident[EI_CLASS]);
 	}
+	printf(" Data: ");
 
-	printf("  Version:                           %d", header.e_ident[EI_VERSION]);
-	if (header.e_ident[EI_VERSION] == EV_NONE)
-		printf(" (invalid)\n");
-	else if (header.e_ident[EI_VERSION] != EV_CURRENT)
-		printf(" (unknown)\n");
-	else
+	if (e_ident[EI_DATA] == ELFDATA2LSB)
+	{
+		printf("2's complement, little endian\n");
+	} else if (e_ident[EI_DATA] == ELFDATA2MSB)
+	{
+		printf("2's complement, big endian\n");
+	} else
+	{
+		printf("<unknown: %x>\n", e_ident[EI_DATA]);
+	}
+	printf(" Version: %d", e_ident[EI_VERSION]);
+
+	if (e_ident[EI_VERSION] == EV_CURRENT)
+	{
+		printf(" (current)\n");
+	} else
+	{
 		printf("\n");
-
-	printf("  OS/ABI:                            ");
-	switch (header.e_ident[EI_OSABI])
+	}
+	printf(" OS/ABI: ");
+	switch (e_ident[EI_OSABI])
 	{
 	case ELFOSABI_NONE:
-		printf("UNIX System V ABI\n");
+		printf("UNIX - System V\n");
 		break;
 	case ELFOSABI_HPUX:
-		printf("HP-UX ABI\n");
+		printf("UNIX - HP-UX\n");
 		break;
 	case ELFOSABI_NETBSD:
-		printf("NetBSD ABI\n");
+		printf("UNIX - NetBSD\n");
 		break;
 	case ELFOSABI_LINUX:
-		printf("Linux ABI\n");
+		printf("UNIX - Linux\n");
 		break;
-	case ELFOSABI_SOL
+	case ELFOSABI_SOLARIS:
+		printf("UNIX - Solaris\n");
+		break;
+	case ELFOSABI_IRIX:
+		printf("UNIX - IRIX\n");
+		break;
+	case ELFOSABI_FREEBSD:
+		printf("UNIX - FreeBSD\n");
+		break;
+	case ELFOSABI_TRU64:
+		printf("UNIX - TRU64\n");
+		break;
+	case ELFOSABI_ARM:
+		printf("ARM\n");
+		break;
+	case ELFOSABI_STANDALONE:
+		printf("Standalone
