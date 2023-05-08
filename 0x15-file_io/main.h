@@ -18,6 +18,7 @@ void print_usage_error(void);
 void print_read_error(char *filename);
 void print_write_error(char *filename);
 void print_close_error(int fd);
+int elf_header(const char *filename);
 
 
 #endif
